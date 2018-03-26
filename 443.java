@@ -1,35 +1,51 @@
 class Solution {
-    public int minMutation(String start, String end, String[] bank) {
-        if(start.equals(end)) return 0;
-        Set<String> bankSet = new HashSet<>();
-        for(String b : bank) bankSet.add(b);
-        Set<String> visited = new HashSet<>();
-        Queue<String> queue = new LinkedList<>();
-        char[] genes = new char[]{'A','T','C','G'};
-        int level = 0;
-        queue.offer(start);
-        visited.add(start);
-        while(!queue.isEmpty()){
-            int size = queue.size();
-            while(size-->0){
-                String g = queue.poll();
-                if(g.equals(end)) return level;
-                char[] gc = g.toCharArray();
-                for(int i=0;i<gc.length;i++){
-                    char old = gc[i];
-                    for(char c : genes){
-                        gc[i] = c;
-                        String gn = new String(gc);
-                        if(!visited.contains(gn)&&bankSet.contains(gn)){
-                            queue.offer(gn);
-                            visited.add(gn);
-                        }
+    public int compress(char[] chars) {
+        char cur = chars[0];
+        int curc = 1;
+        int pos = 1;
+        int real = 0;
+        while(pos<chars.length){
+            char c = chars[pos];
+            if(c==cur){
+                curc++;
+            }else{
+                chars[real++]=cur;
+                if(curc!=1){
+                    if(curc>=1000){
+                        chars[real++] = (char)('0'+curc/1000);
+                        curc%=1000;
                     }
-                    gc[i] = old;
+                    if(curc>=100){
+                        chars[real++] = (char)('0'+curc/100);
+                        curc%=100;
+                    }
+                    if(curc>=10){
+                        chars[real++] = (char)('0'+curc/10);
+                        curc%=10;
+                    }
+                    chars[real++] = (char)('0'+curc);
                 }
+                cur = c;
+                curc=1;
             }
-            level++;
+            pos++;
         }
-        return -1;
+        chars[real++]=cur;
+        if(curc!=1){
+            if(curc>=1000){
+                chars[real++] = (char)('0'+curc/1000);
+                curc%=1000;
+            }
+            if(curc>=100){
+                chars[real++] = (char)('0'+curc/100);
+                curc%=100;
+            }
+            if(curc>=10){
+                chars[real++] = (char)('0'+curc/10);
+                curc%=10;
+            }
+            chars[real++] = (char)('0'+curc);
+        }
+        return real;
     }
 }
